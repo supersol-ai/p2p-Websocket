@@ -99,7 +99,7 @@ async fn read_messages(mut read: impl StreamExt<Item = Result<Message, tokio_tun
 }
 
 pub async fn leader_election(
-    peers: &Mutex<Vec<Peer>>,
+    peers: &Arc<Mutex<Vec<Peer>>>,
     peer_id: u64,
     my_random_number: u64,
 ) -> u64 {
@@ -127,7 +127,7 @@ pub async fn leader_election(
     leader_id
 }
 
-async fn broadcast_message(peers: &Mutex<Vec<Peer>>, message: MessageType) {
+async fn broadcast_message(peers: &Arc<Mutex<Vec<Peer>>>, message: MessageType) {
     let msg_text = serde_json::to_string(&message).unwrap();
     let msg = Message::Text(msg_text);
 
@@ -138,7 +138,7 @@ async fn broadcast_message(peers: &Mutex<Vec<Peer>>, message: MessageType) {
 }
 
 pub async fn send_message_to_leader(
-    peers: &Mutex<Vec<Peer>>,
+    peers: &Arc<Mutex<Vec<Peer>>>,
     leader_id: u64,
     peer_id: u64,
     content: String,
@@ -159,7 +159,7 @@ pub async fn send_message_to_leader(
 }
 
 pub async fn leader_broadcast(
-    peers: &Mutex<Vec<Peer>>,
+    peers: &Arc<Mutex<Vec<Peer>>>,
     content: String,
 ) {
     let message = MessageType::LeaderMessage { content };
